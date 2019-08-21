@@ -1,7 +1,8 @@
+
 #ifndef _BOBBINDRIVER_H
 #define _BOBBINDRIVER_H
 
-volatile unsigned long signalCount;
+volatile uint64_t signalCount;
 
 void onSignal();
 
@@ -30,4 +31,4 @@ class BobbinDriver {
         uint8_t m_interruptPin;
 };
 
-#endif // _BOBBINDRIVER_H
+#endif
