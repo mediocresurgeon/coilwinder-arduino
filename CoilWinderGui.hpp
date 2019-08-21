@@ -1,8 +1,8 @@
 #include "MCUFRIEND_kbv.h"
 #include "TouchScreen.h"
 
-#ifndef COILWINDERGUI_H
-#define COILWINDERGUI_H
+#ifndef _COILWINDERGUI_H
+#define _COILWINDERGUI_H
 
 enum TouchArea {
     Miss,
@@ -46,4 +46,4 @@ class CoilWinderGui {
         double getDistance(int16_t x0, int16_t y0, int16_t x1, int16_t y1);
 };
 
-#endif
+#endif // _COILWINDERGUI_H

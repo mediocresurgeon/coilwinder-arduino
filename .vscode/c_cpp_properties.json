@@ -26,8 +26,25 @@
             "browse": {
                 "limitSymbolsToIncludedHeaders": false,
                 "path": [
+                    "/Applications/Arduino.app/Contents/Java/tools/**",
+                    "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/**",
+                    "${workspaceFolder}/**",
                     "/Library/Developer/CommandLineTools/usr/include/c++/v1/",
-                    "/Applications/Arduino.app/Contents/Java/"
+                    "/Applications/Arduino.app/Contents/Java/libraries/**",
+                    "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/variants/standard",
+                    "/Applications/Arduino.app/Contents/Java/hardware/arduino/avr/cores/arduino",
+                    "/Applications/Arduino.app/Contents/Java/hardware/tools/avr/**",
+                    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/usr/include",
+                    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks",
+                    "~/Documents/Arduino/libraries/Adafruit_Circuit_Playground/",
+                    "~/Documents/Arduino/libraries/Adafruit_GFX_Library/",
+                    "~/Documents/Arduino/libraries/Adafruit_TFTLCD/",
+                    "~/Documents/Arduino/libraries/MCUFRIEND_kbv/",
+                    "~/Documents/Arduino/libraries/Servo/",
+                    "~/Documents/Arduino/libraries/TouchScreen/",
+                    "~/Documents/Arduino/libraries/TFT_HX8357_Due-master/",
+                    "~/Documents/Arduino/libraries/AccelStepper/",
+                    "~/Documents/Arduino/libraries/TinyStepper_28BYJ_48/"
                 ]
             },
             "forcedInclude": [
@@ -39,7 +56,7 @@
                 "/Library/Frameworks",
                 "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX10.14.sdk/System/Library/Frameworks"
             ],
-            "compilerPath": "/usr/bin/clang"
+            "compilerPath": "/usr/bin/g++"
         }
     ],
     "version": 4
