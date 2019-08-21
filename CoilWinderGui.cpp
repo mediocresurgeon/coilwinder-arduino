@@ -1,7 +1,7 @@
-#include "CoilWinderGui.hpp"
+#include "CoilWinderGui.h"
+#include <WString.h>
 #include "MCUFRIEND_kbv.h"
 #include "TouchScreen.h"
-#include <WString.h>
 
 using namespace std;
 

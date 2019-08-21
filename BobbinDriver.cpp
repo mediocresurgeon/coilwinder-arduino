@@ -1,4 +1,4 @@
-#include "BobbinDriver.hpp"
+#include "BobbinDriver.h"
 
 void onSignal() {
     signalCount++;
@@ -32,4 +32,8 @@ void BobbinDriver::stop() {
 
 uint8_t BobbinDriver::revolutionCount() {
     return signalCount / m_ppm;
+}
+
+BobbinDriverState BobbinDriver::getState() {
+    return m_state;
 }

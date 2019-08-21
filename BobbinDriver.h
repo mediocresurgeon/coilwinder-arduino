@@ -22,6 +22,7 @@ class BobbinDriver {
         void start();
         void stop();
         uint8_t revolutionCount();
+        BobbinDriverState getState();
 
     private:
         // members

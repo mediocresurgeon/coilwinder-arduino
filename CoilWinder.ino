@@ -1,6 +1,6 @@
 #include "MCUFRIEND_kbv.h"
-#include "CoilWinderGui.hpp"
-#include "BobbinDriver.hpp"
+#include "CoilWinderGui.h"
+#include "BobbinDriver.h"
 
 // Display screen constants
 #define YP A3  // must be an analog pin, use "An" notation!
@@ -20,7 +20,7 @@
 // global variables
 CoilWinderGui gui;
 TouchScreen ts(XP, YP, XM, YM, 300);
-BobbinDriver bobbin(BOBBIN_COUNT_PIN, BOBBIN_CONTROL_PIN, CHIHAI_PPM);
+BobbinDriver bobbinMotor(BOBBIN_COUNT_PIN, BOBBIN_CONTROL_PIN, CHIHAI_PPM);
 
 
 void setup() {
@@ -32,10 +32,6 @@ void setup() {
 
 void loop() { 
     TSPoint p = ts.getPoint();
-    // Unfortunate, but the touch feature of the screen uses
-    // the same XM and YP pins that the LCD screen feature uses.
-    // So after calling getPoint(), we need to
-    // reset those pins so that the LCDs can be updated.
     pinMode(XM, OUTPUT); // IF YOU DON'T CALL THESE
     pinMode(YP, OUTPUT); // THE SCREEN WILL BE FROZEN
 
