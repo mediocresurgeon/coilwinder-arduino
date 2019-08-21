@@ -9,28 +9,46 @@
 #define XP 8   // can be a digital pin
 
 // Touchscreen constants
-#define MIN_PRESSURE 10
-#define MAX_PRESSURE 1000
+#define MIN_PRESSURE     10
+#define MAX_PRESSURE   1000
+#define DEBOUNCE_MILLIS 100
 
 // Chihai constants
 #define BOBBIN_COUNT_PIN   21
 #define BOBBIN_CONTROL_PIN 50
 #define CHIHAI_PPM         15
 
-// global variables
-CoilWinderGui gui;
+// Physical components
 TouchScreen ts(XP, YP, XM, YM, 300);
 BobbinDriver bobbinMotor(BOBBIN_COUNT_PIN, BOBBIN_CONTROL_PIN, CHIHAI_PPM);
+CoilWinderGui gui(&bobbinMotor);
+
+// Global variables
+// (used for debouncing the touchscreen).
+// This lets us avoid the use of the delay() function
+unsigned long lastBtnDownPressTime; // Timestamp of last valid "Down" touch
+unsigned long lastBtnUpPressTime;   // Timestamp of last valid "Up" touch
 
 
 void setup() {
     Serial.begin(9600);
-    bobbin.init();
+    bobbinMotor.init();
     gui.start();
 }
 
 
 void loop() { 
+    unsigned long now = millis(); // A timestamp for this loop
+
+    // Turn off motors when required number of rotations has been reached
+    if (Active == bobbinMotor.getState()
+        && gui.getDesiredRotations() <= bobbinMotor.getRotationCount()) {
+        bobbinMotor.stop();
+    }
+
+    /////////////////////////////////////////
+    // Begin handling touchscreen commands //
+    /////////////////////////////////////////
     TSPoint p = ts.getPoint();
     pinMode(XM, OUTPUT); // IF YOU DON'T CALL THESE
     pinMode(YP, OUTPUT); // THE SCREEN WILL BE FROZEN
@@ -39,12 +57,16 @@ void loop() {
         TouchArea area = gui.getTouchArea(&p);
         switch (area) {
             case Up:
-                gui.onUpBtnPress();
-                delay(100); // UI debouncing
+                if (now > (lastBtnUpPressTime + DEBOUNCE_MILLIS)) { 
+                    gui.onUpBtnPress();
+                    lastBtnUpPressTime = now;
+                }
                 break;
             case Down:
-                gui.onDownBtnPress();
-                delay(100); // UI debouncing
+                if (now > (lastBtnDownPressTime + DEBOUNCE_MILLIS)) {
+                    gui.onDownBtnPress();
+                    lastBtnDownPressTime = now;
+                }
                 break;
             case Okay:
                 gui.onOkayBtnPress();
@@ -63,4 +85,7 @@ void loop() {
                 break;
         }
     }
+    ///////////////////////////////////////
+    // End handling touchscreen commands //
+    ///////////////////////////////////////
 }

@@ -1,4 +1,5 @@
 #include "CoilWinderGui.h"
+#include "BobbinDriver.h"
 #include <WString.h>
 #include "MCUFRIEND_kbv.h"
 #include "TouchScreen.h"
@@ -50,10 +51,11 @@ using namespace std;
 // BEGIN INITIALISE //
 //////////////////////
 
-CoilWinderGui::CoilWinderGui() {
+CoilWinderGui::CoilWinderGui(BobbinDriver *bobbinDriver) {
     m_coilCount = 1;
     m_rotationCount = 300;
     m_highlightedArea = Rotations;
+    m_bobbinDriver = bobbinDriver;
 }
 
 void CoilWinderGui::start() {
@@ -316,11 +318,11 @@ void CoilWinderGui::onDownBtnPress() {
 }
 
 void CoilWinderGui::onOkayBtnPress() {
-    // TODO: Send updated signals to attached devices
+    m_bobbinDriver->start();
 }
 
 void CoilWinderGui::onCancelBtnPress() {
-    // TODO: Send signals to turn off any attached devices
+    m_bobbinDriver->stop();
 }
 
 void CoilWinderGui::onCoilsFieldPress() {
@@ -349,3 +351,13 @@ double CoilWinderGui::getDistance(int16_t x0, int16_t y0, int16_t x1, int16_t y1
 /////////////////////////////////
 // END INTERPRET USER COMMANDS //
 /////////////////////////////////
+
+////////////////
+// BEGIN MISC //
+////////////////
+uint8_t CoilWinderGui::getDesiredRotations() {
+    return m_rotationCount;
+}
+//////////////
+// END MISC //
+//////////////

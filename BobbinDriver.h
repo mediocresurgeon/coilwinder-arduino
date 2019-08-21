@@ -2,8 +2,6 @@
 #ifndef _BOBBINDRIVER_H
 #define _BOBBINDRIVER_H
 
-volatile uint64_t signalCount;
-
 void onSignal();
 
 enum BobbinDriverState {
@@ -21,7 +19,7 @@ class BobbinDriver {
         void init();
         void start();
         void stop();
-        uint8_t revolutionCount();
+        uint8_t getRotationCount();
         BobbinDriverState getState();
 
     private:

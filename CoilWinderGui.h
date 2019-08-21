@@ -1,5 +1,6 @@
 #include "MCUFRIEND_kbv.h"
 #include "TouchScreen.h"
+#include "BobbinDriver.h"
 
 #ifndef _COILWINDERGUI_H
 #define _COILWINDERGUI_H
@@ -17,11 +18,12 @@ enum TouchArea {
 class CoilWinderGui {
     public:
         // constructor
-        CoilWinderGui();
+        CoilWinderGui(BobbinDriver *bobbinDriver);
         
         // methods
         void start();
         TouchArea getTouchArea(TSPoint *p);
+        uint8_t getDesiredRotations();
         void onCoilsFieldPress();
         void onRotationsFieldPress();
         void onUpBtnPress();
@@ -35,6 +37,7 @@ class CoilWinderGui {
         TouchArea m_highlightedArea;
         uint16_t m_coilCount;
         uint16_t m_rotationCount;
+        BobbinDriver *m_bobbinDriver;
 
         // methods
         void drawCancelButton();
