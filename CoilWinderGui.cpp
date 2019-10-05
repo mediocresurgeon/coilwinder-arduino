@@ -1,8 +1,9 @@
-#include "CoilWinderGui.h"
-#include "BobbinDriver.h"
+
 #include <WString.h>
 #include "MCUFRIEND_kbv.h"
 #include "TouchScreen.h"
+#include "CoilWinderGui.h"
+#include "Chihai.h"
 
 using namespace std;
 
@@ -51,11 +52,11 @@ using namespace std;
 // BEGIN INITIALISE //
 //////////////////////
 
-CoilWinderGui::CoilWinderGui(BobbinDriver *bobbinDriver) {
+CoilWinderGui::CoilWinderGui(Chihai *chihai) {
     m_coilCount = 1;
     m_rotationCount = 300;
     m_highlightedArea = Rotations;
-    m_bobbinDriver = bobbinDriver;
+    m_chihai = chihai;
 }
 
 void CoilWinderGui::start() {
@@ -318,11 +319,11 @@ void CoilWinderGui::onDownBtnPress() {
 }
 
 void CoilWinderGui::onOkayBtnPress() {
-    m_bobbinDriver->start();
+    m_chihai->start(m_rotationCount);
 }
 
 void CoilWinderGui::onCancelBtnPress() {
-    m_bobbinDriver->stop();
+    m_chihai->stop();
 }
 
 void CoilWinderGui::onCoilsFieldPress() {

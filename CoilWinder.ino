@@ -1,6 +1,6 @@
 #include "MCUFRIEND_kbv.h"
+#include "Chihai.h"
 #include "CoilWinderGui.h"
-#include "BobbinDriver.h"
 
 // Display screen constants
 #define YP A3  // must be an analog pin, use "An" notation!
@@ -13,15 +13,9 @@
 #define MAX_PRESSURE   1000
 #define DEBOUNCE_MILLIS 100
 
-// Chihai constants
-#define BOBBIN_COUNT_PIN   21
-#define BOBBIN_CONTROL_PIN 50
-#define CHIHAI_PPM         15
-
-// Physical components
 TouchScreen ts(XP, YP, XM, YM, 300);
-BobbinDriver bobbinMotor(BOBBIN_COUNT_PIN, BOBBIN_CONTROL_PIN, CHIHAI_PPM);
-CoilWinderGui gui(&bobbinMotor);
+Chihai* chihai;
+CoilWinderGui* gui;
 
 // Global variables
 // (used for debouncing the touchscreen).
@@ -30,21 +24,25 @@ unsigned long lastBtnDownPressTime; // Timestamp of last valid "Down" touch
 unsigned long lastBtnUpPressTime;   // Timestamp of last valid "Up" touch
 
 
+#define CHIHAI_INTERRUPT_PIN 21
+#define CHIHAI_SPEED_PIN     46
+// We want 1 rotation every 20,000 microseconds so that nema17 can keep up
+#define CHIHAI_PACE 20000
+
+
 void setup() {
     Serial.begin(9600);
-    bobbinMotor.init();
-    gui.start();
+    
+    chihai = Chihai::getInstance(CHIHAI_INTERRUPT_PIN, CHIHAI_SPEED_PIN);
+    gui = new CoilWinderGui(chihai);
+    
+    gui->start();
+    chihai->setPace(CHIHAI_PACE); 
 }
 
 
 void loop() { 
     unsigned long now = millis(); // A timestamp for this loop
-
-    // Turn off motors when required number of rotations has been reached
-    if (Active == bobbinMotor.getState()
-        && gui.getDesiredRotations() <= bobbinMotor.getRotationCount()) {
-        bobbinMotor.stop();
-    }
 
     /////////////////////////////////////////
     // Begin handling touchscreen commands //
@@ -54,31 +52,31 @@ void loop() {
     pinMode(YP, OUTPUT); // THE SCREEN WILL BE FROZEN
 
     if (p.z > MIN_PRESSURE && p.z < MAX_PRESSURE) {
-        TouchArea area = gui.getTouchArea(&p);
+        TouchArea area = gui->getTouchArea(&p);
         switch (area) {
             case Up:
                 if (now > (lastBtnUpPressTime + DEBOUNCE_MILLIS)) { 
-                    gui.onUpBtnPress();
+                    gui->onUpBtnPress();
                     lastBtnUpPressTime = now;
                 }
                 break;
             case Down:
                 if (now > (lastBtnDownPressTime + DEBOUNCE_MILLIS)) {
-                    gui.onDownBtnPress();
+                    gui->onDownBtnPress();
                     lastBtnDownPressTime = now;
                 }
                 break;
             case Okay:
-                gui.onOkayBtnPress();
+                gui->onOkayBtnPress();
                 break;
             case Cancel:
-                gui.onCancelBtnPress();
+                gui->onCancelBtnPress();
                 break;
             case Coils:
-                gui.onCoilsFieldPress();
+                gui->onCoilsFieldPress();
                 break;
             case Rotations:
-                gui.onRotationsFieldPress();
+                gui->onRotationsFieldPress();
                 break;
             default:
                 // Nothing was touched, so take no action
