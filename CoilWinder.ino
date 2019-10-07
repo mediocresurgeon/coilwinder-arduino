@@ -1,6 +1,7 @@
 #include "MCUFRIEND_kbv.h"
 #include "Chihai.h"
 #include "CoilWinderGui.h"
+#include "GuideStepper.h"
 
 // Display screen constants
 #define YP A3  // must be an analog pin, use "An" notation!
@@ -13,9 +14,18 @@
 #define MAX_PRESSURE   1000
 #define DEBOUNCE_MILLIS 100
 
+// Guide stepper constants
+#define GSI 20  // Must be an interrupt pin (18-21)
+#define GSP 36  // power for calibration switch
+#define GS1 23
+#define GS2 25
+#define GS3 27
+#define GS4 29
+
 TouchScreen ts(XP, YP, XM, YM, 300);
 Chihai* chihai;
 CoilWinderGui* gui;
+GuideStepper* wireGuide;
 
 // Global variables
 // (used for debouncing the touchscreen).
@@ -24,20 +34,23 @@ unsigned long lastBtnDownPressTime; // Timestamp of last valid "Down" touch
 unsigned long lastBtnUpPressTime;   // Timestamp of last valid "Up" touch
 
 
-#define CHIHAI_INTERRUPT_PIN 21
-#define CHIHAI_SPEED_PIN     46
+#define CI 21  // Must be an interrupt pin (18-21)
+#define CS 46  // Must be an analog output pin (44-46)
 // We want 1 rotation every 20,000 microseconds so that nema17 can keep up
 #define CHIHAI_PACE 20000
 
 
 void setup() {
-    Serial.begin(9600);
+    Serial.begin(19200);
     
-    chihai = Chihai::getInstance(CHIHAI_INTERRUPT_PIN, CHIHAI_SPEED_PIN);
+    wireGuide = GuideStepper::getInstance(GSI, GSP, GS1, GS2, GS3, GS4);
+    chihai = Chihai::getInstance(CI, CS);
     gui = new CoilWinderGui(chihai);
-    
+
     gui->start();
-    chihai->setPace(CHIHAI_PACE); 
+    chihai->setPace(CHIHAI_PACE);
+
+    wireGuide->powerOn();
 }
 
 

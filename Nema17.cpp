@@ -1,17 +1,15 @@
 #include "Nema17.h"
 #include "Arduino.h"
 
-Nema17::Nema17(uint8_t pin1,
-               uint8_t pin2,
-               uint8_t pin3,
-               uint8_t pin4) 
-    : m_isOn(false),
-      m_pin1(pin1),
+
+Nema17::Nema17(uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4)
+    : m_pin1(pin1),
       m_pin2(pin2),
       m_pin3(pin3),
       m_pin4(pin4),
+      m_state(Off),
       m_direction(Clockwise),
-      m_currentState(Off) {
+      m_isOn(false) {
         pinMode(m_pin1, OUTPUT);
         pinMode(m_pin2, OUTPUT);
         pinMode(m_pin3, OUTPUT);
@@ -19,13 +17,23 @@ Nema17::Nema17(uint8_t pin1,
 }
 
 
-Nema17::~Nema17() {
-    powerOff();
+void Nema17::setDirection(Direction direction) {
+    m_direction = direction;
 }
 
 
-bool Nema17::isPoweredOn() {
-    return m_isOn;
+void Nema17::toggleDirection() {
+    m_direction = (Clockwise == m_direction) ? Anticlockwise
+                                             : Clockwise;
+}
+
+
+void Nema17::togglePower() {
+    if (Off == m_state) {
+        powerOn();
+    } else {
+        powerOff();
+    }
 }
 
 
@@ -35,60 +43,32 @@ void Nema17::powerOn() {
 
 
 void Nema17::powerOff() {
-    setState(Off);
     m_isOn = false;
-}
-
-
-void Nema17::togglePower() {
-    if (isPoweredOn()) {
-        powerOff();
-    } else {
-        powerOn();
-    }
+    m_state = Off;
+    setState(m_state);
 }
 
 
 void Nema17::moveHalfStep() {
-    setState(getNextState());
-}
-
-
-StepperState Nema17::getCurrentState() {
-    return m_currentState;
-}
-
-
-void Nema17::setState(StepperState newState) {
-    if (!isPoweredOn() || m_currentState == newState) {
+    if (!m_isOn) {
         return;
     }
-    m_currentState = newState;
-    digitalWrite(m_pin1, ((m_currentState & 0x8) ? HIGH : LOW));
-    digitalWrite(m_pin2, ((m_currentState & 0x4) ? HIGH : LOW));
-    digitalWrite(m_pin3, ((m_currentState & 0x2) ? HIGH : LOW));
-    digitalWrite(m_pin4, ((m_currentState & 0x1) ? HIGH : LOW));
+    m_state = getNextState();
+    setState(m_state);
+}
+
+
+void Nema17::setState(StepperState state) {
+    digitalWrite(m_pin1, m_state & 0x8);
+    digitalWrite(m_pin2, m_state & 0x4);
+    digitalWrite(m_pin3, m_state & 0x2);
+    digitalWrite(m_pin4, m_state & 0x1);
 }
 
 
 StepperState Nema17::getNextState() {
-    if (!isPoweredOn()) {
-        return Off;
-    }
-    if (Clockwise == getDirection()) {
-        switch (getCurrentState()) {
-            case HHLL: return HLLL;
-            case LHLL: return HHLL;
-            case LHHL: return LHLL;
-            case LLHL: return LHHL;
-            case LLHH: return LLHL;
-            case LLLH: return LLHH;
-            case HLLH: return LLLH;
-            case HLLL: return HLLH;
-            default:   return HLLL;
-        }
-    } else { // Anticlockwise
-        switch (getCurrentState()) {
+    if (Clockwise == m_direction) {
+        switch (m_state) {
             case HLLL: return HHLL;
             case HHLL: return LHLL;
             case LHLL: return LHHL;
@@ -99,24 +79,17 @@ StepperState Nema17::getNextState() {
             case HLLH: return HLLL;
             default:   return HLLL;
         }
-    }
-}
-
-
-Direction Nema17::getDirection() {
-    return m_direction;
-}
-
-
-void Nema17::setDirection(Direction newDirection) {
-    m_direction = newDirection;
-}
-
-
-void Nema17::toggleDirection() {
-    if (Clockwise == getDirection()) {
-        setDirection(Anticlockwise);
     } else {
-        setDirection(Clockwise);
+        switch (m_state) {
+            case HLLL: return HLLH;
+            case HHLL: return HLLL;
+            case LHLL: return HHLL;
+            case LHHL: return LHLL;
+            case LLHL: return LHHL;
+            case LLHH: return LLHL;
+            case LLLH: return LLHH;
+            case HLLH: return LLLH;
+            default:   return HLLL;
+        }
     }
 }

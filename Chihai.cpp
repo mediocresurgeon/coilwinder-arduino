@@ -65,7 +65,12 @@ void Chihai::start(uint16_t rotationCount) {
     m_targetPulseCount = rotationCount * PPM;
 
     m_state = Active;
+
+    auto _SREG = SREG;  // save the current (interrupt) state
+    cli();              // stop interrupts from firing
     attachInterrupt(digitalPinToInterrupt(m_interruptPin), s_chihai->onHallSignal, RISING);
+    SREG = _SREG;       // restore (interrupt) state
+
     analogWrite(m_motorSpeedPin, m_motorSpeedCoefficient);
 }
 
@@ -78,7 +83,11 @@ void Chihai::stop() {
     
     m_state = Idle;
     analogWrite(m_motorSpeedPin, LOW);
+
+    auto _SREG = SREG;  // save the current (interrupt) state
+    cli();              // stop interrupts from firing
     detachInterrupt(digitalPinToInterrupt(m_interruptPin));
+    SREG = _SREG;       // restore (interrupt) state
 }
 
 void Chihai::setPace(uint32_t microsecondsPerRotation) {

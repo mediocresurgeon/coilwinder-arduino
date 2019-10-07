@@ -1,5 +1,5 @@
-#ifndef NEMA17_H
-#define NEMA17_H
+#ifndef _NEMA17_H
+#define _NEMA17_H
 
 #include <stdint.h>
 
@@ -7,6 +7,7 @@ enum Direction {
     Clockwise,
     Anticlockwise
 };
+
 
 enum StepperState {
     Off  = 0x0,
@@ -20,39 +21,32 @@ enum StepperState {
     HLLH = 0x9,
 };
 
+
 class Nema17 {
     public:
         // constructor
         Nema17(uint8_t, uint8_t, uint8_t, uint8_t);
-        // destructor
-        virtual ~Nema17();
-        
-        // methods
-        virtual bool isPoweredOn();
-        virtual void powerOn();
-        virtual void powerOff();
-        virtual void togglePower();
-        
-        virtual void moveHalfStep();
 
-    protected:
-        // methods
-        virtual StepperState getCurrentState();
-        virtual void setState(StepperState);
-        virtual StepperState getNextState();
-        virtual Direction getDirection();
-        virtual void setDirection(Direction);
-        virtual void toggleDirection();
+        // method
+        virtual void moveHalfStep();
+        void setDirection(Direction);
+        void toggleDirection();
+        void togglePower();
+        void powerOn();
+        void powerOff();
 
     private:
-        // fields
-        bool m_isOn;
+        // method
+        StepperState getNextState();
+        void setState(StepperState);
+
+        //fields
         const uint8_t m_pin1;
         const uint8_t m_pin2;
         const uint8_t m_pin3;
         const uint8_t m_pin4;
+        StepperState m_state;
         Direction m_direction;
-        StepperState m_currentState;
+        bool m_isOn;
 };
-
 #endif
