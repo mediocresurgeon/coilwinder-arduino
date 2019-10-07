@@ -52,11 +52,13 @@ using namespace std;
 // BEGIN INITIALISE //
 //////////////////////
 
-CoilWinderGui::CoilWinderGui(Chihai *chihai) {
-    m_coilCount = 1;
-    m_rotationCount = 300;
-    m_highlightedArea = Rotations;
-    m_chihai = chihai;
+CoilWinderGui::CoilWinderGui(Chihai *chihai)
+    : m_tft(),
+      m_highlightedArea(Rotations),
+      m_coilCount(1),
+      m_rotationCount(300),
+      m_chihai(chihai) {
+          // intentionally blank
 }
 
 void CoilWinderGui::start() {

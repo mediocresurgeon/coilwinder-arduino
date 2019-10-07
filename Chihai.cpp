@@ -40,11 +40,7 @@ Chihai::Chihai(uint8_t interruptPin, uint8_t motorSpeedPin) :
     m_targetMicrosPerSignal((500 * 40) / PPM),
     m_targetPulseCount(0),
     m_pulseCount(0),
-    m_timestamp(0)
-    
-    
-    
-     {
+    m_timestamp(0) {
         pinMode(m_motorSpeedPin, OUTPUT);
         pinMode(m_interruptPin, INPUT_PULLUP);
 }

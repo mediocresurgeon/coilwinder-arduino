@@ -19,7 +19,7 @@ class Chihai {
         ChihaiState getState();
         uint16_t getCompletedRotations();
 
-        uint8_t m_motorSpeedCoefficient;
+        
 
     private:
         // constructor
@@ -32,12 +32,12 @@ class Chihai {
         // members
         const uint8_t m_motorSpeedPin;
         const uint8_t m_interruptPin;
-        
+        uint8_t m_motorSpeedCoefficient;
         ChihaiState m_state;
         uint32_t m_targetMicrosPerSignal;
         uint16_t m_targetPulseCount;
-        uint16_t m_pulseCount;
-        unsigned long m_timestamp;
+        volatile uint16_t m_pulseCount;
+        volatile unsigned long m_timestamp;
 };
 
 #endif
