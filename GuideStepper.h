@@ -8,23 +8,29 @@
 class GuideStepper : public Nema17 {
     public:
         // static methods
-        static GuideStepper* getInstance(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+        static GuideStepper* getInstance(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
         static void GuideStepper::onTimerTick();
 
         // override methods
         virtual void moveHalfStep();
+        virtual void powerOn();
+        virtual void powerOff();
 
         // methods
         void runUntil(uint16_t);
-        void calibrate();
+
 
     private:
         // constructor
-        GuideStepper(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+        GuideStepper(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
+
+        // methods
+        void calibrate();
 
         // fields
-        const uint8_t m_switchPowerPin;
-        const uint8_t m_switchSignalPin;
+        const uint8_t m_enablePin1;
+        const uint8_t m_enablePin2;
+        const uint8_t m_interruptPin;
         uint16_t m_currentSteps;
         uint16_t m_targetSteps;
 };

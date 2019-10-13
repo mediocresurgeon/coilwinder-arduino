@@ -61,6 +61,7 @@ CoilWinderGui::CoilWinderGui(Chihai *chihai)
           // intentionally blank
 }
 
+
 void CoilWinderGui::start() {
     // This method configures the touchscreen and loads its initial graphics
     m_tft.begin(m_tft.readID());
@@ -103,6 +104,7 @@ void CoilWinderGui::drawCoilField() {
     m_tft.print("Coils:" + spaces + String(m_coilCount));
 }
 
+
 void CoilWinderGui::drawRotationField() {
     // Draws the field which displays the number of rotations to process
     bool isHighlighted = (Rotations == m_highlightedArea);
@@ -124,6 +126,7 @@ void CoilWinderGui::drawRotationField() {
                                            : String(F("      "));
     m_tft.print("Rotations:" + spaces + String(m_rotationCount));
 }
+
 
 void CoilWinderGui::drawCancelButton() {
     // This method draws the Cancel button
@@ -149,6 +152,7 @@ void CoilWinderGui::drawCancelButton() {
     }
 }
 
+
 void CoilWinderGui::drawOkayButton() {
     // This method draws the Okay button
     m_tft.fillCircle(OKAY_BTN_X, OKAY_BTN_Y, BUTTON_RADIUS, GREEN);
@@ -168,6 +172,7 @@ void CoilWinderGui::drawOkayButton() {
     }
 }
 
+
 void CoilWinderGui::drawUpButton() {
     int16_t leftX = UP_UPPER_X;
     int16_t middleX = UP_UPPER_X + (UP_WIDTH / 2);
@@ -181,6 +186,7 @@ void CoilWinderGui::drawUpButton() {
     m_tft.fillTriangle(leftX, middleY, middleX, topY, rightX, middleY, LIGHT_BLUE);
     m_tft.fillRect(stumpX, middleY, 1+UP_WIDTH/2, UP_HEIGHT/2, LIGHT_BLUE);
 }
+
 
 void CoilWinderGui::drawDownButton() {
     int16_t leftX = DOWN_UPPER_X;
@@ -267,6 +273,7 @@ TouchArea CoilWinderGui::getTouchArea(TSPoint *p) {
     return Miss;
 }
 
+
 void CoilWinderGui::onUpBtnPress() {
     #define MAX_COILS      10
     #define MAX_ROTATIONS 500
@@ -292,6 +299,7 @@ void CoilWinderGui::onUpBtnPress() {
             break;
     }
 }
+
 
 void CoilWinderGui::onDownBtnPress() {
     #define MIN_COILS      1
@@ -320,13 +328,16 @@ void CoilWinderGui::onDownBtnPress() {
     }
 }
 
+
 void CoilWinderGui::onOkayBtnPress() {
     m_chihai->start(m_rotationCount);
 }
 
+
 void CoilWinderGui::onCancelBtnPress() {
     m_chihai->stop();
 }
+
 
 void CoilWinderGui::onCoilsFieldPress() {
     if (Coils != m_highlightedArea) {
@@ -336,6 +347,7 @@ void CoilWinderGui::onCoilsFieldPress() {
     }
 }
 
+
 void CoilWinderGui::onRotationsFieldPress() {
     if (Rotations != m_highlightedArea) {
         m_highlightedArea = Rotations;
@@ -343,6 +355,7 @@ void CoilWinderGui::onRotationsFieldPress() {
         drawRotationField();
     }
 }
+
 
 double CoilWinderGui::getDistance(int16_t x0, int16_t y0, int16_t x1, int16_t y1) {
     // This method calculates the distance between two points

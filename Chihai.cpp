@@ -8,6 +8,7 @@
 // Holds a reference to the singleton of Chihai
 static Chihai* s_chihai = 0;
 
+
 static void Chihai::onHallSignal() {
     unsigned long now = micros();
     s_chihai->m_pulseCount++;
@@ -17,6 +18,7 @@ static void Chihai::onHallSignal() {
     }
     s_chihai->adjustSpeed(now);
 }
+
 
 void Chihai::adjustSpeed(unsigned long nowMicroSec) {
     if (m_timestamp) {
@@ -32,7 +34,7 @@ void Chihai::adjustSpeed(unsigned long nowMicroSec) {
 }
 
 
-Chihai::Chihai(uint8_t interruptPin, uint8_t motorSpeedPin) :
+Chihai::Chihai(uint8_t interruptPin, uint8_t motorSpeedPin, GuideStepper* guideStepper) :
     m_motorSpeedPin(motorSpeedPin),
     m_interruptPin(interruptPin),
     m_motorSpeedCoefficient(DEFAULT_SPEED),
@@ -40,15 +42,16 @@ Chihai::Chihai(uint8_t interruptPin, uint8_t motorSpeedPin) :
     m_targetMicrosPerSignal((500 * 40) / PPM),
     m_targetPulseCount(0),
     m_pulseCount(0),
-    m_timestamp(0) {
+    m_timestamp(0),
+    m_guideStepper(guideStepper) {
         pinMode(m_motorSpeedPin, OUTPUT);
         pinMode(m_interruptPin, INPUT_PULLUP);
 }
 
 
-static Chihai* Chihai::getInstance(uint8_t interruptPin, uint8_t motorSpeedPin) {
+static Chihai* Chihai::getInstance(uint8_t interruptPin, uint8_t motorSpeedPin, GuideStepper* guideStepper) {
     if (s_chihai == 0) {
-        s_chihai = new Chihai(interruptPin, motorSpeedPin);
+        s_chihai = new Chihai(interruptPin, motorSpeedPin, guideStepper);
     }
     return s_chihai;
 }
@@ -60,6 +63,8 @@ void Chihai::start(uint16_t rotationCount) {
         return;
     }
     
+    m_guideStepper->powerOn();
+
     m_pulseCount = 0;
     m_timestamp = 0;
     m_targetPulseCount = rotationCount * PPM;
@@ -80,7 +85,7 @@ void Chihai::stop() {
     if (m_state == Idle) {
         return;
     }
-    
+    m_guideStepper->powerOff();
     m_state = Idle;
     analogWrite(m_motorSpeedPin, LOW);
 

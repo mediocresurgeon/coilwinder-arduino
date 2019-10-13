@@ -15,12 +15,13 @@
 #define DEBOUNCE_MILLIS 100
 
 // Guide stepper constants
-#define GSI 20  // Must be an interrupt pin (18-21)
-#define GSP 36  // power for calibration switch
-#define GS1 23
-#define GS2 25
-#define GS3 27
-#define GS4 29
+#define GSI 20
+#define GSE1 23
+#define GSE2 33
+#define GS1 25
+#define GS2 27
+#define GS3 29
+#define GS4 31
 
 TouchScreen ts(XP, YP, XM, YM, 300);
 Chihai* chihai;
@@ -43,14 +44,13 @@ unsigned long lastBtnUpPressTime;   // Timestamp of last valid "Up" touch
 void setup() {
     Serial.begin(19200);
     
-    wireGuide = GuideStepper::getInstance(GSI, GSP, GS1, GS2, GS3, GS4);
-    chihai = Chihai::getInstance(CI, CS);
-    gui = new CoilWinderGui(chihai);
-
-    gui->start();
+    wireGuide = GuideStepper::getInstance(GSI, GSE1, GSE2, GS1, GS2, GS3, GS4);
+    
+    chihai = Chihai::getInstance(CI, CS, wireGuide);
     chihai->setPace(CHIHAI_PACE);
-
-    wireGuide->powerOn();
+    
+    gui = new CoilWinderGui(chihai);
+    gui->start();
 }
 
 
