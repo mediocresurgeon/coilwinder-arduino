@@ -4,6 +4,9 @@
 #define DEFAULT_SPEED 200
 #define PPM            15
 
+#define SIGNALS_TO_SKIP 3
+#define STEPS_TO_TAKE   1
+
 
 // Holds a reference to the singleton of Chihai
 static Chihai* s_chihai = 0;
@@ -12,6 +15,9 @@ static Chihai* s_chihai = 0;
 static void Chihai::onHallSignal() {
     unsigned long now = micros();
     s_chihai->m_pulseCount++;
+    if (0 == s_chihai->m_pulseCount % SIGNALS_TO_SKIP) {
+        s_chihai->m_guideStepper->runUntil(STEPS_TO_TAKE);
+    }
     if (s_chihai->m_pulseCount >= s_chihai->m_targetPulseCount) {
         s_chihai->stop();
         return;

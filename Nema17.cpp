@@ -17,14 +17,19 @@ Nema17::Nema17(uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4)
 }
 
 
+Direction Nema17::getDirection() {
+    return m_direction;
+}
+
 void Nema17::setDirection(Direction direction) {
     m_direction = direction;
 }
 
 
 void Nema17::toggleDirection() {
-    m_direction = (Clockwise == m_direction) ? Anticlockwise
-                                             : Clockwise;
+    Direction newDirection = (Clockwise == getDirection()) ? Anticlockwise
+                                                           : Clockwise;
+    setDirection(newDirection);
 }
 
 
@@ -67,7 +72,7 @@ void Nema17::setState(StepperState state) {
 
 
 StepperState Nema17::getNextState() {
-    if (Clockwise == m_direction) {
+    if (Clockwise == getDirection()) {
         switch (m_state) {
             case HLLL: return HHLL;
             case HHLL: return LHLL;

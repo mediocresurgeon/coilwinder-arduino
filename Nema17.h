@@ -28,12 +28,13 @@ class Nema17 {
         Nema17(uint8_t, uint8_t, uint8_t, uint8_t);
 
         // method
+        virtual void powerOn();
+        virtual void powerOff();
+        virtual void togglePower();
+        virtual Direction getDirection();
+        virtual void setDirection(Direction);
+        virtual void toggleDirection();
         virtual void moveHalfStep();
-        void setDirection(Direction);
-        void toggleDirection();
-        void togglePower();
-        void powerOn();
-        void powerOff();
 
     private:
         // method

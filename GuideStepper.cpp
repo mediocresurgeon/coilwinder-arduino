@@ -21,7 +21,7 @@ static GuideStepper* s_guideStepper = 0;
 
 static void GuideStepper::onTimerTick() {
     if (0 == s_guideStepper->m_targetSteps || s_guideStepper->m_currentSteps < s_guideStepper->m_targetSteps) {
-        s_guideStepper->moveHalfStep();
+        s_guideStepper->smartStep();
     } else {
         Timer1.stop();
     }
@@ -52,7 +52,6 @@ GuideStepper::GuideStepper(uint8_t calibrationInterruptPin, uint8_t enablePin1, 
         attachInterrupt(digitalPinToInterrupt(m_interruptPin), onSwitch, CHANGE);
         Timer1.initialize(MAX_PACE);
         SREG = _SREG;       // restore (interrupt) state
-        
 }
 
 
@@ -64,9 +63,17 @@ void GuideStepper::runUntil(uint16_t steps) {
 }
 
 
-void GuideStepper::moveHalfStep() {
-    Nema17::moveHalfStep();
+void GuideStepper::smartStep() {
+    moveHalfStep();
     m_currentSteps++;
+    if (Clockwise == getDirection()) {
+        m_position++;
+    } else {
+        m_position--;
+    }
+    if (m_position == 0 || m_position == HALFSTEPS_PER_LOOP) {
+        toggleDirection();
+    }
 }
 
 
@@ -76,6 +83,7 @@ void GuideStepper::powerOn() {
     Nema17::powerOn();
     calibrate();
 }
+
 
 void GuideStepper::powerOff() {
     digitalWrite(m_enablePin1, LOW);
@@ -96,4 +104,5 @@ void GuideStepper::calibrate() {
         moveHalfStep();
         delayMicroseconds(MAX_PACE);
     }
+    m_position = 0;
 }

@@ -12,7 +12,6 @@ class GuideStepper : public Nema17 {
         static void GuideStepper::onTimerTick();
 
         // override methods
-        virtual void moveHalfStep();
         virtual void powerOn();
         virtual void powerOff();
 
@@ -26,6 +25,7 @@ class GuideStepper : public Nema17 {
 
         // methods
         void calibrate();
+        void smartStep();
 
         // fields
         const uint8_t m_enablePin1;
@@ -33,6 +33,7 @@ class GuideStepper : public Nema17 {
         const uint8_t m_interruptPin;
         uint16_t m_currentSteps;
         uint16_t m_targetSteps;
+        uint16_t m_position;
 };
 
 #endif
