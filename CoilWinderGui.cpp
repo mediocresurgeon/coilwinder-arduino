@@ -37,6 +37,9 @@ using namespace std;
 #define ROTS_WIDTH   230
 #define ROTS_HEIGHT   45
 
+#define ROTS_COUNT_UPPER_X   5
+#define ROTS_COUNT_UPPER_Y 112
+
 #define UP_UPPER_X 129
 #define UP_UPPER_Y 274
 #define UP_WIDTH    40
@@ -56,7 +59,7 @@ CoilWinderGui::CoilWinderGui(Chihai *chihai)
     : m_tft(),
       m_highlightedArea(Rotations),
       m_coilCount(1),
-      m_rotationCount(300),
+      m_rotationCount(500),
       m_chihai(chihai) {
           // intentionally blank
 }
@@ -201,7 +204,15 @@ void CoilWinderGui::drawDownButton() {
 
     m_tft.fillRect(stumpX, topY, 1+DOWN_WIDTH/2, DOWN_HEIGHT/2, LIGHT_BLUE);
     m_tft.fillTriangle(leftX, middleY, middleX, bottomY, rightX, middleY, LIGHT_BLUE);
-    
+}
+
+
+void CoilWinderGui::displayRotationCount(uint16_t rotations) {
+    m_tft.fillRect(ROTS_COUNT_UPPER_X+140, ROTS_COUNT_UPPER_Y, 60, 15, BLACK);
+    m_tft.setCursor(ROTS_COUNT_UPPER_X, ROTS_COUNT_UPPER_Y);
+    m_tft.setTextColor(WHITE);
+    m_tft.setTextSize(2);
+    m_tft.print("Live count: " + String(rotations));
 }
 
 ///////////////////////
@@ -302,8 +313,8 @@ void CoilWinderGui::onUpBtnPress() {
 
 
 void CoilWinderGui::onDownBtnPress() {
-    #define MIN_COILS      1
-    #define MIN_ROTATIONS 10
+    #define MIN_COILS       1
+    #define MIN_ROTATIONS 200
     // When the DOWN button is pressed,
     // something should be decreased.
     // (It might be the coil count, or

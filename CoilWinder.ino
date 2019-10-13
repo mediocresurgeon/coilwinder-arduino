@@ -47,7 +47,6 @@ void setup() {
     wireGuide = GuideStepper::getInstance(GSI, GSE1, GSE2, GS1, GS2, GS3, GS4);
     
     chihai = Chihai::getInstance(CI, CS, wireGuide);
-    chihai->setPace(CHIHAI_PACE);
     
     gui = new CoilWinderGui(chihai);
     gui->start();
@@ -95,6 +94,12 @@ void loop() {
                 // Nothing was touched, so take no action
                 break;
         }
+    }
+
+    if (Active == chihai->getState()) {
+        delay(60);
+        uint16_t currentRotations = chihai->getCompletedRotations();
+        gui->displayRotationCount(currentRotations);
     }
     ///////////////////////////////////////
     // End handling touchscreen commands //

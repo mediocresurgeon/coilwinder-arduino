@@ -1,7 +1,7 @@
 #include "Chihai.h"
 
 // 0 -> off, 255 -> max
-#define DEFAULT_SPEED 200
+#define DEFAULT_SPEED 255
 #define PPM            15
 
 #define SIGNALS_TO_SKIP 3
@@ -45,7 +45,7 @@ Chihai::Chihai(uint8_t interruptPin, uint8_t motorSpeedPin, GuideStepper* guideS
     m_interruptPin(interruptPin),
     m_motorSpeedCoefficient(DEFAULT_SPEED),
     m_state(Idle),
-    m_targetMicrosPerSignal((500 * 40) / PPM),
+    m_targetMicrosPerSignal(400),
     m_targetPulseCount(0),
     m_pulseCount(0),
     m_timestamp(0),

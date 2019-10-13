@@ -32,6 +32,7 @@ class CoilWinderGui {
         void onDownBtnPress();
         void onCancelBtnPress();
         void onOkayBtnPress();
+        void displayRotationCount(uint16_t rotations);
 
     private:
         // fields
