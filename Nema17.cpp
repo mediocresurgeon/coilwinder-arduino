@@ -2,14 +2,18 @@
 #include "Arduino.h"
 
 
-Nema17::Nema17(uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4)
-    : m_pin1(pin1),
+Nema17::Nema17(uint8_t enablePin1, uint8_t enablePin2, uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4)
+    : m_enablePin1(enablePin1),
+      m_enablePin2(enablePin2),
+      m_pin1(pin1),
       m_pin2(pin2),
       m_pin3(pin3),
       m_pin4(pin4),
       m_state(Off),
       m_direction(Clockwise),
       m_isOn(false) {
+        pinMode(m_enablePin1, OUTPUT);
+        pinMode(m_enablePin2, OUTPUT);
         pinMode(m_pin1, OUTPUT);
         pinMode(m_pin2, OUTPUT);
         pinMode(m_pin3, OUTPUT);
@@ -43,14 +47,18 @@ void Nema17::togglePower() {
 
 
 void Nema17::powerOn() {
+    digitalWrite(m_enablePin1, HIGH);
+    digitalWrite(m_enablePin2, HIGH);
     m_isOn = true;
 }
 
 
 void Nema17::powerOff() {
-    m_isOn = false;
+    digitalWrite(m_enablePin1, LOW);
+    digitalWrite(m_enablePin2, LOW);
     m_state = Off;
     setState(m_state);
+    m_isOn = false;
 }
 
 

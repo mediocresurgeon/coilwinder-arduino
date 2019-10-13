@@ -37,15 +37,11 @@ static GuideStepper* GuideStepper::getInstance(uint8_t calibrationInterruptPin, 
 
 
 GuideStepper::GuideStepper(uint8_t calibrationInterruptPin, uint8_t enablePin1, uint8_t enablePin2, uint8_t pin1, uint8_t pin2, uint8_t pin3, uint8_t pin4)
-    : Nema17(pin1, pin2, pin3, pin4),
-      m_currentSteps(0),
-      m_targetSteps(0),
+    : Nema17(enablePin1, enablePin2, pin1, pin2, pin3, pin4),
       m_interruptPin(calibrationInterruptPin),
-      m_enablePin1(enablePin1),
-      m_enablePin2(enablePin2) {
+      m_currentSteps(0),
+      m_targetSteps(0) {
         pinMode(m_interruptPin, INPUT_PULLUP);
-        pinMode(m_enablePin1, OUTPUT);
-        pinMode(m_enablePin2, OUTPUT);
         auto _SREG = SREG;  // save the current (interrupt) state
         cli();              // stop interrupts from firing
         pinMode(m_interruptPin, INPUT_PULLUP);
@@ -78,17 +74,8 @@ void GuideStepper::smartStep() {
 
 
 void GuideStepper::powerOn() {
-    digitalWrite(m_enablePin1, HIGH);
-    digitalWrite(m_enablePin2, HIGH);
     Nema17::powerOn();
     calibrate();
-}
-
-
-void GuideStepper::powerOff() {
-    digitalWrite(m_enablePin1, LOW);
-    digitalWrite(m_enablePin2, LOW);
-    Nema17::powerOff();
 }
 
 

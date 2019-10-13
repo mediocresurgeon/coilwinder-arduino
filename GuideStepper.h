@@ -13,7 +13,6 @@ class GuideStepper : public Nema17 {
 
         // override methods
         virtual void powerOn();
-        virtual void powerOff();
 
         // methods
         void runUntil(uint16_t);
@@ -28,8 +27,6 @@ class GuideStepper : public Nema17 {
         void smartStep();
 
         // fields
-        const uint8_t m_enablePin1;
-        const uint8_t m_enablePin2;
         const uint8_t m_interruptPin;
         uint16_t m_currentSteps;
         uint16_t m_targetSteps;

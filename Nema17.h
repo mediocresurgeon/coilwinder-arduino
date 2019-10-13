@@ -25,7 +25,7 @@ enum StepperState {
 class Nema17 {
     public:
         // constructor
-        Nema17(uint8_t, uint8_t, uint8_t, uint8_t);
+        Nema17(uint8_t, uint8_t, uint8_t, uint8_t, uint8_t, uint8_t);
 
         // method
         virtual void powerOn();
@@ -42,6 +42,8 @@ class Nema17 {
         void setState(StepperState);
 
         //fields
+        const uint8_t m_enablePin1;
+        const uint8_t m_enablePin2;
         const uint8_t m_pin1;
         const uint8_t m_pin2;
         const uint8_t m_pin3;
